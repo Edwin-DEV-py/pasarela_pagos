@@ -10,6 +10,8 @@ from django.conf import settings
 from django.http import JsonResponse
 import requests
 
+from .producer import publish
+
 #vista para crear orden
 class OrderView(APIView):
     def post(self,request):
@@ -63,6 +65,7 @@ class OrderView(APIView):
                     
                     if serializer2.is_valid():
                         serializer2.save()
+                        publish('vaciar_carrito', user)
                     else:
                         return Response(serializer2.errors, status=status.HTTP_400_BAD_REQUEST)
                     
