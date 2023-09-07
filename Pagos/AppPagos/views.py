@@ -65,7 +65,7 @@ class OrderView(APIView):
                     
                     if serializer2.is_valid():
                         serializer2.save()
-                        publish('vaciar_carrito', user)
+                        publish('vaciar_carrito',user)
                     else:
                         return Response(serializer2.errors, status=status.HTTP_400_BAD_REQUEST)
                     
