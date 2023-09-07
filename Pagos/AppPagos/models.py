@@ -41,7 +41,6 @@ class Order(models.Model):
 class CardOrder(models.Model):
     user = models.CharField(max_length=100)
     order = models.ForeignKey(Order,on_delete=models.CASCADE)
-    payment = models.ForeignKey(Payment,on_delete=models.CASCADE)
     id_carta = models.CharField(max_length=24)
     quantity = models.IntegerField()
     price = models.FloatField()

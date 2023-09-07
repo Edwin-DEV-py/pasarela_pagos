@@ -13,38 +13,62 @@ import requests
 #vista para crear orden
 class OrderView(APIView):
     def post(self,request):
+        
+        #recibir el usuario desde el front
         user = request.data.get('user')
         
         cart_url = 'http://127.0.0.1:8000/api/cart/'
         cart_data = {
             "user": user
         }
+        
+        #hacer llamado a la api de carrito
         response = requests.get(cart_url, json=cart_data)
+        
+        #verificamos la respuesta
         if response.status_code == 200:
             items = response.json()
             
-            order_items = [item['id_carta'] for item in items]
-            
+            #calcular el valor total, iva y subtotal
             total = sum(item['price'] + item['quantity'] for item in items)
             iva = total * 0.16
-            subfinal = total
             final = total + iva
             
+            #datos para la orden de compra
             data = {
                 'user':user,
-                'order_total':total,
-                'iva':iva,
-                'data':'hola'
+                'order_total':final,
+                'iva':iva
             }
             
             serializer = OrderSerializer(data=data)
             
+            #guardar el serializer y mostrar la respuesta
             if serializer.is_valid():
-                serializer.save()
-
+                order = serializer.save()
+                order_data = OrderSerializer(order).data #serializamos la respuesta
+                
+                #para cada carta del carrito que estaba a la hora de la orden se anade a la base de datos y se le asigna a la orden de compra
+                for i in items:
+                    data2={
+                        'user':user,
+                        'order': order_data['order_id'],
+                        'id_carta':i['id_carta'],
+                        'quantity':i['quantity'],
+                        'price':i['price']
+                    }
+                    
+                    #se serializa la rsepuesta y se guardan las cartas
+                    serializer2 = CardOrderSerializer(data=data2)
+                    
+                    if serializer2.is_valid():
+                        serializer2.save()
+                    else:
+                        return Response(serializer2.errors, status=status.HTTP_400_BAD_REQUEST)
+                    
                 response_data = {
                     'order':serializer.data,
-                    'items':order_items
+                    'items':items
                 }
                 
             return Response(response_data, status=200)
