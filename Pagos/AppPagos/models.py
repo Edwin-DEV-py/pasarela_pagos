@@ -25,8 +25,7 @@ class Payment(models.Model):
 class Order(models.Model):
     order_id = models.AutoField(unique=True,primary_key=True)
     user = models.CharField(max_length=100)
-    payment = models.ForeignKey(Payment,on_delete=models.CASCADE,blank=True,null=True)
-    order_note = models.CharField(max_length=100, blank=True)
+    #payment = models.ForeignKey(Payment,on_delete=models.CASCADE,blank=True,null=True)
     order_total = models.FloatField()
     iva = models.FloatField()
     status = models.CharField(max_length=20, choices=status_content, default='Nuevo')
