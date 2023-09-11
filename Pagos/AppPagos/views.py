@@ -14,22 +14,14 @@ from .producer import publish
 
 #vista para crear orden
 class OrderView(APIView):
-    def get(self,request):
-        order_id = request.data.get('order_id')
-        
-        order = Order.objects.get(order_id=order_id)
-        
-        serializer3 = OrderSerializer(order)
-        return Response(serializer3.data)
-        
-    def post(self,request,user):
+    def post(self,request):
         
         #recibir el usuario desde el front
-        #user = request.data.get('user_id')
+        user = request.data.get('user')
         
-        cart_url = f'http://127.0.0.1:8000/api/cart/{user}'
+        cart_url = 'http://127.0.0.1:8000/api/cart/'
         cart_data = {
-            "user_id": user
+            "user": user
         }
         
         #hacer llamado a la api de carrito
@@ -40,13 +32,13 @@ class OrderView(APIView):
             items = response.json()
             
             #calcular el valor total, iva y subtotal
-            total = sum(item['price'] * item['quantity'] for item in items)
-            iva = total * 0.19
+            total = sum(item['price'] + item['quantity'] for item in items)
+            iva = total * 0.16
             final = total + iva
             
             #datos para la orden de compra
             data = {
-                'user_id':user,
+                'user':user,
                 'order_total':final,
                 'iva':iva
             }
@@ -70,20 +62,19 @@ class OrderView(APIView):
                     
                     #se serializa la rsepuesta y se guardan las cartas
                     serializer2 = CardOrderSerializer(data=data2)
-                    
+
                     if serializer2.is_valid():
                         serializer2.save()
                         publish('vaciar_carrito',user)
                     else:
                         return Response(serializer2.errors, status=status.HTTP_400_BAD_REQUEST)
-                    
-            response_data = {
-                'order':serializer.data,
-                'items':items
-            }
+
+                response_data = {
+                    'order':serializer.data,
+                    'items':items
+                }
                 
             return Response(response_data, status=200)
         else:
             # Maneja el caso en que no se pueda obtener el carrito de compras correctamente
             return Response({'error': 'No se pudo obtener el carrito de compras'}, status=response.status_code)
-        
