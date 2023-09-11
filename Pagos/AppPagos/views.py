@@ -14,6 +14,14 @@ from .producer import publish
 
 #vista para crear orden
 class OrderView(APIView):
+    def get(self,request):
+        order_id = request.data.get('order_id')
+        
+        order = Order.objects.get(order_id=order_id)
+        
+        serializer3 = OrderSerializer(order)
+        return Response(serializer3.data)
+    
     def post(self,request):
         
         #recibir el usuario desde el front
@@ -33,7 +41,7 @@ class OrderView(APIView):
             
             #calcular el valor total, iva y subtotal
             total = sum(item['price'] + item['quantity'] for item in items)
-            iva = total * 0.16
+            iva = total * 0.19
             final = total + iva
             
             #datos para la orden de compra
