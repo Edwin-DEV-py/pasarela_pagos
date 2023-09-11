@@ -14,14 +14,22 @@ from .producer import publish
 
 #vista para crear orden
 class OrderView(APIView):
-    def post(self,request):
+    def get(self,request):
+        order_id = request.data.get('order_id')
+        
+        order = Order.objects.get(order_id=order_id)
+        
+        serializer3 = OrderSerializer(order)
+        return Response(serializer3.data)
+        
+    def post(self,request,user):
         
         #recibir el usuario desde el front
-        user = request.data.get('user')
+        #user = request.data.get('user_id')
         
-        cart_url = 'http://127.0.0.1:8000/api/cart/'
+        cart_url = f'http://127.0.0.1:8000/api/cart/{user}'
         cart_data = {
-            "user": user
+            "user_id": user
         }
         
         #hacer llamado a la api de carrito
@@ -32,13 +40,13 @@ class OrderView(APIView):
             items = response.json()
             
             #calcular el valor total, iva y subtotal
-            total = sum(item['price'] + item['quantity'] for item in items)
-            iva = total * 0.16
+            total = sum(item['price'] * item['quantity'] for item in items)
+            iva = total * 0.19
             final = total + iva
             
             #datos para la orden de compra
             data = {
-                'user':user,
+                'user_id':user,
                 'order_total':final,
                 'iva':iva
             }
@@ -69,10 +77,10 @@ class OrderView(APIView):
                     else:
                         return Response(serializer2.errors, status=status.HTTP_400_BAD_REQUEST)
                     
-                response_data = {
-                    'order':serializer.data,
-                    'items':items
-                }
+            response_data = {
+                'order':serializer.data,
+                'items':items
+            }
                 
             return Response(response_data, status=200)
         else:
