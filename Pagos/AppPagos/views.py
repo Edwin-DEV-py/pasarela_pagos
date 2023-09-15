@@ -26,8 +26,9 @@ class OrderView(APIView):
         
         #recibir el usuario desde el front
         user = request.data.get('user')
+        print('Usuario recibido:', user)
         
-        cart_url = 'http://127.0.0.1:8000/api/cart/'
+        cart_url = 'http://127.0.0.1:8001/api/cart/'
         cart_data = {
             "user": user
         }
@@ -40,7 +41,7 @@ class OrderView(APIView):
             items = response.json()
             
             #calcular el valor total, iva y subtotal
-            total = sum(item['price'] + item['quantity'] for item in items)
+            total = sum(item['price'] * item['quantity'] for item in items)
             iva = total * 0.19
             final = total + iva
             
@@ -52,7 +53,6 @@ class OrderView(APIView):
             }
             
             serializer = OrderSerializer(data=data)
-            
             #guardar el serializer y mostrar la respuesta
             if serializer.is_valid():
                 order = serializer.save()
@@ -77,12 +77,12 @@ class OrderView(APIView):
                     else:
                         return Response(serializer2.errors, status=status.HTTP_400_BAD_REQUEST)
 
-                response_data = {
-                    'order':serializer.data,
-                    'items':items
-                }
+            response_data = {
+                'order':serializer.data,
+                'items':items
+            }
                 
-            return Response(response_data, status=200)
+            return Response(response_data, status=status.HTTP_200_OK)
         else:
             # Maneja el caso en que no se pueda obtener el carrito de compras correctamente
             return Response({'error': 'No se pudo obtener el carrito de compras'}, status=response.status_code)
