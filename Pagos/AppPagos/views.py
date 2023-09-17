@@ -14,13 +14,20 @@ from .producer import publish
 
 #vista para crear orden
 class OrderView(APIView):
-    def get(self,request):
-        order_id = request.data.get('order_id')
+    def get(self,request,order_id):
+        #order_id = request.data.get('order_id')
         
         order = Order.objects.get(order_id=order_id)
+        itemOrder = CardOrder.objects.filter(order=order_id)
         
         serializer3 = OrderSerializer(order)
-        return Response(serializer3.data)
+        serializer4 = CardOrderSerializer(itemOrder,many=True)
+        
+        response_data = {
+            'order_id':serializer3.data,
+            'Items':serializer4.data
+        }
+        return Response(response_data)
     
     def post(self,request):
         
