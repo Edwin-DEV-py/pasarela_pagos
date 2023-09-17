@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.http import JsonResponse
 import requests
-
 from .producer import publish
 
 #vista para crear orden
@@ -93,3 +92,25 @@ class OrderView(APIView):
         else:
             # Maneja el caso en que no se pueda obtener el carrito de compras correctamente
             return Response({'error': 'No se pudo obtener el carrito de compras'}, status=response.status_code)
+        
+#Guardar el pago
+class PaymentView(APIView):
+    def post(self,request):
+        user = request.data.get('user')
+        order = request.data.get('order_id')
+        total = request.data.get('order_total')
+        body = request.data.get('paypal')
+        
+        payment = Payment(
+            user = user,
+            id = order,
+            payment_method = body['payment_method'],
+            amount_id = total,
+            status = body['status'] #esto lo devuelve paypal
+        )
+        
+        serializer = PaymentSerializer(data=payment)
+        if serializer.is_valid():
+            serializer.save()
+        
+        
