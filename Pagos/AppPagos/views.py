@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.http import JsonResponse
 import requests
-from .producer import publish
+from .producer import publish,publish2
 
 #vista para crear orden
 class OrderView(APIView):
@@ -114,6 +114,7 @@ class PaymentView(APIView):
         serializer = PaymentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            publish2('agregar-perfil',{'user': user, 'order_id': order})
         
         return Response(serializer.data)
         

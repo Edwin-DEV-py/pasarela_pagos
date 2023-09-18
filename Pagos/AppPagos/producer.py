@@ -12,7 +12,6 @@ def publish(method,body):
 
 
 #segunda conexion
-
 params2 = pika.URLParameters('amqps://augowwbq:8t-grsKLXggpPsDjMb-YH9sLf7bBTzRm@jaragua.lmq.cloudamqp.com/augowwbq')
 connection2 = pika.BlockingConnection(params2)
 channel2 = connection2.channel()
