@@ -99,18 +99,22 @@ class PaymentView(APIView):
         user = request.data.get('user')
         order = request.data.get('order_id')
         total = request.data.get('order_total')
-        body = request.data.get('paypal')
+        status = request.data.get('status')
+        paymentID = request.data.get('paymentID')
+        print(user,order,total,status,paymentID)
         
-        payment = Payment(
-            user = user,
-            id = order,
-            payment_method = body['payment_method'],
-            amount_id = total,
-            status = body['status'] #esto lo devuelve paypal
-        )
+        data = {
+            'user': user,
+            'id' :order,
+            'payment_method':paymentID,
+            'amount_id': total,
+            'status':status #esto lo devuelve paypal
+        }
         
-        serializer = PaymentSerializer(data=payment)
+        serializer = PaymentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+        
+        return Response(serializer.data)
         
         
