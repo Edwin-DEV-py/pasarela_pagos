@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-=+5pe5q(eazb0l=7_=sa7*c))+nl87&1_1f*xl*r+w_1!la5pp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['20.25.34.123','*']
+ALLOWED_HOSTS = ['20.25.34.123','*','https://store.thenexusbattles2.cloud/pagos-api/','store.thenexusbattles2.cloud/pagos-api/','store.thenexusbattles2.cloud']
 
 
 # Application definition

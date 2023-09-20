@@ -34,7 +34,8 @@ class OrderView(APIView):
         user = request.data.get('user')
         print('Usuario recibido:', user)
         
-        cart_url = 'http://127.0.0.1:8001/api/cart/'
+        #cart_url = 'http://127.0.0.1:8001/api/cart/'
+        cart_url = 'https://store.thenexusbattles2.cloud/carrito/api/cart/'
         cart_data = {
             "user": user
         }
