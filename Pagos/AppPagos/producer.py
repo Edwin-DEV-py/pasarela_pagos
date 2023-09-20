@@ -1,6 +1,6 @@
 import pika, json
 
-params = pika.URLParameters('amqps://fjonsldu:WYViCxnki3fHD6oBcv8tIO3iAZ8T24Yq@jackal.rmq.cloudamqp.com/fjonsldu')
+params = pika.URLParameters('amqps://pimhdfyz:v79_lwTMTMNkSRg3qgGxbQC1nD2y6ivM@jaragua.lmq.cloudamqp.com/pimhdfyz')
 connection = pika.BlockingConnection(params)
 channel = connection.channel()
 print('conectado')
@@ -14,7 +14,7 @@ def publish(method, body):
         print(f'Error al publicar el mensaje: {str(e)}')
 
 #canal dos        
-params2 = pika.URLParameters('amqps://fjonsldu:WYViCxnki3fHD6oBcv8tIO3iAZ8T24Yq@jackal.rmq.cloudamqp.com/fjonsldu')
+params2 = pika.URLParameters('amqps://pimhdfyz:v79_lwTMTMNkSRg3qgGxbQC1nD2y6ivM@jaragua.lmq.cloudamqp.com/pimhdfyz')
 connection2 = pika.BlockingConnection(params2)
 channel2 = connection2.channel()
 print('conectado2')
