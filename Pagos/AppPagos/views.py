@@ -80,7 +80,7 @@ class OrderView(APIView):
 
                     if serializer2.is_valid():
                         serializer2.save()
-                        publish('vaciar_carrito',user)
+                        #publish('vaciar_carrito',user)
                     else:
                         return Response(serializer2.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -115,7 +115,7 @@ class PaymentView(APIView):
         serializer = PaymentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            publish2('agregar-perfil',{'user': user, 'order_id': order})
+            #publish2('agregar-perfil',{'user': user, 'order_id': order})
         
         return Response(serializer.data)
         
