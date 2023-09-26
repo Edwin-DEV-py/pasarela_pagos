@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.http import JsonResponse
 import requests
-from .producer import publish2,publish
 
 #vista para crear orden
 class OrderView(APIView):
