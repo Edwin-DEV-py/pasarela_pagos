@@ -6,6 +6,12 @@ from .models import Payment,Order,CardOrder
 from .serializers import PaymentSerializer,OrderSerializer,CardOrderSerializer
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
+from django.core.mail import EmailMessage
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
 from django.conf import settings
 from django.http import JsonResponse
 import requests
@@ -114,8 +120,30 @@ class PaymentView(APIView):
         serializer = PaymentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            #publish2('agregar-perfil',{'user': user, 'order_id': order})
+
+            email_url = 'https://store.thenexusbattles2.cloud/login-api/api/getuser/'
+            email_data = {
+            "user": user
+            }
+            
+            response = requests.get(email_url, json=email_data)
         
+            #verificamos la respuesta
+            if response.status_code == 200:
+                email = response.json()
+                
+                mail = 'Comprobante de pago'
+                body = render_to_string('factura.html',{
+                    'user':user,
+                    'factura':serializer.data
+                })
+                user_email = email['email']
+                send_mail = EmailMessage(
+                    mail,body,settings.EMAIL_HOST_USER,to=[user_email]
+                )
+                send_mail.from_email = False
+                send_mail.send()
+            
         return Response(serializer.data)
         
         
