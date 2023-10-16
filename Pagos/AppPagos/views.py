@@ -40,7 +40,7 @@ class OrderView(APIView):
         print('Usuario recibido:', user)
         
         #cart_url = 'http://127.0.0.1:8001/api/cart/'
-        cart_url = 'https://store.thenexusbattles2.cloud/carrito/api/cart/'
+        cart_url = 'https://api.thenexusbattles2.cloud/carrito/api/cart/'
         cart_data = {
             "user": user
         }
@@ -121,7 +121,7 @@ class PaymentView(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            email_url = 'https://store.thenexusbattles2.cloud/login-api/api/getuser/'
+            email_url = 'https://api.thenexusbattles2.cloud/login-api/api/getuser/'
             email_data = {
             "user": user
             }
