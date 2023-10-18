@@ -121,7 +121,7 @@ class PaymentView(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            email_url = 'https://api.thenexusbattles2.cloud/login-api/api/getuser/'
+            email_url = 'https://api.thenexusbattles2.cloud/ldap/api/getuser/'
             email_data = {
             "user": user
             }
